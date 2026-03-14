@@ -3,7 +3,6 @@
 **Course:** Java CLI Build
 **Prepared for:** Amigoscode Academy Students
 **Level:** Junior/Mid-Level Java Engineering
-**Repository:** [github.com/amigoscode/java-master-class](https://github.com/amigoscode/java-master-class)
 
 ---
 
@@ -118,7 +117,7 @@ graph LR
 2. Implement the requirements
 3. Push to remote: `git push origin <branch-name>`
 4. Create a pull request: `gh pr create`
-5. Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy/request-code-review-here)
+5. Request a review
 6. Once approved, squash and merge to `main`
 
 ---
@@ -200,93 +199,7 @@ classDiagram
 
 ---
 
-## 6. Getting Started
-
-The starter template is available at [github.com/amigoscode/java-master-class](https://github.com/amigoscode/java-master-class). There are two ways to set up the project:
-
-### Option A - Create from Template (Recommended)
-
-1. Go to [github.com/amigoscode/java-master-class](https://github.com/amigoscode/java-master-class)
-2. Click **"Use this template"** → **"Create a new repository"**
-3. Name the repository (e.g. `java-master-class`) and create it under your own GitHub account
-4. Clone your new repository:
-
-```bash
-git clone git@github.com:<your-username>/java-master-class.git
-```
-
-### Option B - Clone and Re-point Remote
-
-1. Clone the template repository:
-
-```bash
-git clone git@github.com:amigoscode/java-master-class.git
-```
-
-2. Create a new empty repository on your GitHub account (e.g. `java-master-class`)
-
-3. Re-point the remote to your own repository:
-
-```bash
-cd java-master-class
-git remote set-url origin git@github.com:<your-username>/java-master-class.git
-```
-
-4. Push to your new remote:
-
-```bash
-git push -u origin main
-```
-
-### Then
-
-1. Create the first branch:
-
-```bash
-git checkout -b initial-implementation
-```
-
-2. Create a package with your name and move `Main.java` inside it:
-
-```
-src/com/<yourname>/Main.java
-```
-
-For example, if your name is Franco: `src/com/franco/Main.java`
-
-The starter `Main.java` contains TODOs to guide the first steps:
-
-```java
-// TODO 1. create a new branch called initial-implementation
-// TODO 2. create a package with your name. i.e com.franco and move this file inside the new package
-// TODO 3. implement https://amigoscode.com/learn/java-cli-build/lectures/3a83ecf3-e837-4ae5-85a8-f8ae3f60f7f5
-
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Java Master Class");
-    }
-}
-```
-
-After moving, update the package declaration:
-
-```java
-package com.franco;
-
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Java Master Class");
-    }
-}
-```
-
-3. Begin implementing Phase 1
-
----
-
-## 7. Implementation Phases
+## 6. Implementation Phases
 
 ### Phase 1 - Initial Implementation
 
@@ -343,7 +256,7 @@ graph TB
 ```
 src/
 └── com/
-    └── amigoscode/
+    └── devlawal/
         ├── Main.java
         ├── car/
         │   ├── Brand.java
@@ -410,7 +323,7 @@ git push origin initial-implementation
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
@@ -479,7 +392,7 @@ graph TB
 ```
 src/
 └── com/
-    └── amigoscode/
+    └── devlawal/
         ├── Main.java
         ├── car/
         │   ├── Brand.java
@@ -647,7 +560,7 @@ git push origin interfaces-and-di
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
@@ -694,7 +607,7 @@ git push origin lists
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
@@ -753,7 +666,7 @@ git push origin streams
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
@@ -778,7 +691,7 @@ src/
 ├── main/
 │   ├── java/
 │   │   └── com/
-│   │       └── amigoscode/
+│   │       └── devlawal/
 │   │           ├── Main.java
 │   │           ├── car/
 │   │           │   ├── Brand.java
@@ -830,7 +743,7 @@ Convert the project from a plain Java project to a Maven project.
 
 ```java
 // Before - hardcoded path relative to project root (breaks in Maven)
-File file = new File("src/com/amigoscode/users.csv");
+File file = new File("src/com/devlawal/users.csv");
 
 // After - loads from classpath (src/main/resources/)
 File file = new File(
@@ -993,7 +906,7 @@ git push origin maven-and-tests
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
@@ -1042,37 +955,6 @@ graph TB
 ```
 
 #### Step 1 - Set Up the Spring Boot Project
-
-The Spring Boot starter template is available at [github.com/amigoscode/java-master-class-spring-boot](https://github.com/amigoscode/java-master-class). This is a **separate repository** from the CLI project.
-
-Create or clone the starter (same options as Getting Started):
-
-```bash
-# Option A: Use template on GitHub then clone
-git clone git@github.com:<your-username>/java-master-class-spring-boot.git
-
-# Option B: Clone and re-point
-git clone git@github.com:amigoscode/java-master-class-spring-boot.git
-cd java-master-class-spring-boot
-git remote set-url origin git@github.com:<your-username>/java-master-class-spring-boot.git
-git push -u origin main
-```
-
-The starter comes pre-configured with:
-
-- **Spring Boot 4.0.2** with **Java 25**
-- **Spring Web** for REST endpoints
-- **Spring Data JPA** for database access
-- **H2** embedded in-memory database
-- `application.yml` configured to run on **port 8080**
-
-Verify the project runs:
-
-```bash
-./mvnw spring-boot:run
-```
-
-The application should start on `http://localhost:8080`. The H2 console is available at `http://localhost:8080/h2-console`.
 
 #### Step 2 - Copy Domain Classes
 
@@ -1475,7 +1357,7 @@ git push origin main
 gh pr create
 ```
 
-Request a review from the [Amigoscode Academy community](https://www.skool.com/amigoscode-academy). Once approved, squash and merge the PR to `main`.
+Request a review. Once approved, squash and merge the PR to `main`.
 
 ---
 
