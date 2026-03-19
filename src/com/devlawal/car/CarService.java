@@ -27,7 +27,7 @@ public class CarService {
             return null;
         }
         int index = 0;
-        Car[] electricCars = new Car[electricCarCounter];
+        Car[] electricCars = new Car[electricCarCounter + 1];
         for (Car car : getAllCars()) {
             if (car.isElectric()) {
 
