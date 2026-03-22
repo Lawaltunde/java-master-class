@@ -67,6 +67,7 @@ public class CarBooking {
     }
 
     public void setEndDate(LocalDate endDate) {
+
         this.endDate = endDate;
     }
 
@@ -96,16 +97,7 @@ public class CarBooking {
 
     @Override
     public String toString() {
-        return "CarBooking{" +
-                "id=" + id +
-                ", user=" + user +
-                ", car=" + car +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", price=" + price +
-                ", status=" + status +
-                ", bookedAt=" + bookedAt +
-                '}';
+        return "CarBooking{" + "id=" + id + ", user=" + user + ", car=" + car + ", startDate=" + startDate + ", endDate=" + endDate + ", price=" + price + ", status=" + status + ", bookedAt=" + bookedAt + '}';
     }
 
     @Override
