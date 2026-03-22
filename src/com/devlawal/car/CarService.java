@@ -30,7 +30,6 @@ public class CarService {
         Car[] electricCars = new Car[electricCarCounter + 1];
         for (Car car : getAllCars()) {
             if (car.isElectric()) {
-
                 electricCars[index++] = car;
             }
         }
@@ -48,6 +47,7 @@ public class CarService {
         }
         return null;
     }
+
     public Car getCarByRegNumber(String regNumber) {
         if (regNumber == null) {
             throw new IllegalArgumentException("Registration Number cannot be null!");
