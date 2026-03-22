@@ -12,9 +12,8 @@ public class CarBookingDao {
     }
 
     public void addBooking(CarBooking carBooking) {
-         int nextFreeSlot = -1;
-
-        for (int i = 0; i< carBookings.length; i++) {
+        int nextFreeSlot = -1;
+        for (int i = 0; i < carBookings.length; i++) {
             if (carBookings[i] == null) {
                 nextFreeSlot = i;
             }
@@ -25,7 +24,7 @@ public class CarBookingDao {
         }
 
         CarBooking[] temp = new CarBooking[carBookings.length + 5];
-        for (int i = 0; i< carBookings.length; i++) {
+        for (int i = 0; i < carBookings.length; i++) {
             temp[i] = carBookings[i];
         }
         nextFreeSlot = carBookings.length;
