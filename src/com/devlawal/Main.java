@@ -37,14 +37,14 @@ public class Main {
                         Scanner scannerUser = new Scanner(System.in);
                         UUID userId = UUID.fromString(scannerUser.nextLine());
 
-                        for (Car car : carService.getAllCars()) { // 2026-03-16
+                        for (Car car : carService.getAllCars()) {
                             System.out.println(car);
                         }
                         System.out.println("Enter Car ID: ");
                         Scanner scannerCar = new Scanner(System.in);
                         UUID carId = UUID.fromString(scannerCar.nextLine());
 
-                        System.out.println("Enter Start Date: ");
+                        System.out.println("Enter Start Date: "); //2026-03-16
                         Scanner scannerStartDate = new Scanner(System.in);
                         LocalDate startDate = LocalDate.parse(scannerStartDate.nextLine());
 
@@ -53,8 +53,8 @@ public class Main {
                         LocalDate endDate = LocalDate.parse(scannerEndDate.nextLine());
 
                         CarBooking newBooking = carBookingService.bookCar(userId, carId, startDate, endDate);
-                        System.out.println("Successfully Booked Car, ID: " + newBooking.getId() + "| Start Date: " + newBooking.getStartDate() + "| End Date: " + newBooking.getEndDate() + " | Price: "+newBooking.getPrice());
-                    }catch (Exception e) {
+                        System.out.println("Successfully Booked Car, ID: " + newBooking.getId() + "| Start Date: " + newBooking.getStartDate() + "| End Date: " + newBooking.getEndDate() + " | Price: " + newBooking.getPrice());
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                     break;
@@ -71,7 +71,12 @@ public class Main {
                         System.out.println("Enter the booking ID you want to cancel: ");
                         Scanner scannerBookingId = new Scanner(System.in);
                         UUID bookingId = UUID.fromString(scannerBookingId.nextLine());
-                        carBookingService.deleteCarBooking(bookingId);
+                        boolean isDeleted = carBookingService.deleteCarBooking(bookingId);
+                        if (isDeleted) {
+                            System.out.println("Booking has been successfully deleted!");
+                        } else {
+                            System.out.println("Failed to delete the booking with ID: " + bookingId);
+                        }
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -98,13 +103,14 @@ public class Main {
                     }
                     break;
                 case 5:
-                    for (Car car : carBookingService.getAllNotYetBookedCars(false)) {
+                    Car[] notYetBookedCars = carBookingService.getNotYetBookedCars();
+                    for (Car car : notYetBookedCars) {
                         System.out.println(car);
                     }
                     break;
                 case 6:
-                    System.out.println(carBookingService.getAllNotYetBookedCars(true).length);
-                    for (Car car : carBookingService.getAllNotYetBookedCars(true)) {
+                    Car[] notYetBookedElectricCars = carBookingService.getNotYetBookedElectricCars();
+                    for (Car car : notYetBookedElectricCars) {
                         System.out.println(car);
                     }
                     break;
@@ -126,20 +132,20 @@ public class Main {
         try {
             System.out.println(
                     """
-                    1 - Book Car
-                    2 - Delete Booking
-                    3 - View All User Booked Cars
-                    4 - View All Bookings
-                    5 - View Available Cars
-                    6 - View Available Electric Cars
-                    7 - View All Users
-                    8 - Exit
-                    """
+                            1 - Book Car
+                            2 - Delete Booking
+                            3 - View All User Booked Cars
+                            4 - View All Bookings
+                            5 - View Available Cars
+                            6 - View Available Electric Cars
+                            7 - View All Users
+                            8 - Exit
+                            """
             );
             Scanner scanner = new Scanner(System.in);
             opt = scanner.nextInt();
-            return  (opt < 1 || opt > 7) ? 8 : opt;
-        }catch(Exception e){
+            return (opt < 1 || opt > 7) ? 8 : opt;
+        } catch (Exception e) {
             throw new InputMismatchException(e.getMessage());
         }
     }
