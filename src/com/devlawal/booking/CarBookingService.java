@@ -136,14 +136,14 @@ public class CarBookingService {
     }
 
     public Car[] getNotYetBookedElectricCars() {
-        return getCars(carService.getAllElectricCars());
+        return getCarsThatAreNotYetBooked(carService.getAllElectricCars());
     }
 
     public Car[] getNotYetBookedCars() {
-        return getCars(carService.getAllCars());
+        return getCarsThatAreNotYetBooked(carService.getAllCars());
     }
 
-    private Car[] getCars(Car[] cars) {
+    private Car[] getCarsThatAreNotYetBooked(Car[] cars) {
         if (cars == null) {
             throw new IllegalStateException("You can't pass empty car list!");
         }
