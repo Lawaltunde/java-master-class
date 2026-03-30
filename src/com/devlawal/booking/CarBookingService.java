@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CarBookingService {
     private final UserService userService;
     private final CarService carService;
-    private CarBookingDao carBookingDao;
+    private final CarBookingDao carBookingDao;
 
 
     {
