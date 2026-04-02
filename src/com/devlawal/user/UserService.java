@@ -6,7 +6,7 @@ public class UserService {
     private static final UserDao userDao;
 
     static {
-        userDao = new UserDao();
+        userDao = new UserArrayDataAccessService();
     }
 
     public User[] getAllUsers() {
@@ -17,11 +17,6 @@ public class UserService {
         if (id == null) {
             throw new IllegalArgumentException("id cannot be null");
         }
-        for (User user : getAllUsers()) {
-            if (user != null && user.getId().equals(id)) {
-                return user;
-            }
-        }
-        return null;
+        return userDao.getUserById(id);
     }
 }
