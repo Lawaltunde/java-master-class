@@ -6,7 +6,8 @@ public class UserService {
     private static final UserDao userDao;
 
     static {
-        userDao = new UserArrayDataAccessService();
+        //userDao = new UserArrayDataAccessService();
+        userDao = new UserFileDataAccessService();
     }
 
     public User[] getAllUsers() {
