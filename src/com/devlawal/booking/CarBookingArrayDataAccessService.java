@@ -1,6 +1,8 @@
 package com.devlawal.booking;
 
-public class CarBookingDao {
+import java.util.UUID;
+
+public class CarBookingArrayDataAccessService implements CarBookingDao {
     private static CarBooking[] carBookings;
 
     static {
@@ -30,6 +32,18 @@ public class CarBookingDao {
         nextFreeSlot = carBookings.length;
         temp[nextFreeSlot] = carBooking;
         carBookings = temp;
+    }
+
+    @Override
+    public boolean deleteCarBooking(UUID id) {
+        CarBooking[] bookings = getAllBookings();
+        for (CarBooking booking : bookings) {
+            if (booking != null && booking.getId().equals(id)) {
+                booking.setStatus(BookingStatus.CANCELLED);
+                return true;
+            }
+        }
+        return false;
     }
 
 }
