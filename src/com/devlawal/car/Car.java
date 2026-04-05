@@ -1,10 +1,11 @@
 package com.devlawal.car;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Car {
+public class Car implements Serializable {
     private UUID id;
     private String regNumber;
     private BigDecimal rentalPrice;
