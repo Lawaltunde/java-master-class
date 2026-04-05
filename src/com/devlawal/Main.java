@@ -86,9 +86,9 @@ public class Main {
                         System.out.println(user);
                     }
                     System.out.println("Enter User ID: ");
-                    Scanner scannerUser = new Scanner(System.in);
-                    UUID userId = UUID.fromString(scannerUser.nextLine());
-                    for (Car booking : carBookingService.getAllCarsBookedByUser(userId)) {
+                    Scanner scannerUser3 = new Scanner(System.in);
+                    UUID userId3 = UUID.fromString(scannerUser3.nextLine());
+                    for (Car booking : carBookingService.getAllCarsBookedByUser(userId3)) {
                         System.out.println(booking);
                     }
                     break;
@@ -103,13 +103,19 @@ public class Main {
                     }
                     break;
                 case 5:
-                    Car[] notYetBookedCars = carBookingService.getNotYetBookedCars();
+                    Car[] notYetBookedCars = carService.getCarsThatAreNotYetBooked();
+                    if (notYetBookedCars == null || notYetBookedCars.length == 0) {
+                        System.out.println("All cars booked!");
+                    }
                     for (Car car : notYetBookedCars) {
                         System.out.println(car);
                     }
                     break;
                 case 6:
-                    Car[] notYetBookedElectricCars = carBookingService.getNotYetBookedElectricCars();
+                    Car[] notYetBookedElectricCars = carService.getNotYetBookedElectricCars();
+                    if (notYetBookedElectricCars == null || notYetBookedElectricCars.length == 0) {
+                        System.out.println("All electric cars booked!");
+                    }
                     for (Car car : notYetBookedElectricCars) {
                         System.out.println(car);
                     }
