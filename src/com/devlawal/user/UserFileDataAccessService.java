@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class UserFileDataAccessService implements UserDao, Serializable {
     private final String PATH = "src/com/devlawal/user/user.dat";
-    File file = new File(PATH);
+    private final File file = new File(PATH);
 
     // to seed user.dat with static data
     static {
@@ -16,9 +16,9 @@ public class UserFileDataAccessService implements UserDao, Serializable {
                     new User(UUID.fromString("b10d126a-3608-4980-9f9c-aa179f5cebc3"), "James")
 
             };
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/com/devlawal/user/user.dat"))){
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/com/devlawal/user/user.dat"))) {
                 oos.writeObject(users);
-            }catch (IOException e){
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
