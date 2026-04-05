@@ -112,7 +112,9 @@ public class CarService {
             boolean isBooked = false;
             if (allBookings != null) {
                 for (CarBooking booking : allBookings) {
-                    if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) continue;
+                    if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
+                        continue;
+                    }
                     if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
                         isBooked = true;
                         break;
@@ -131,11 +133,15 @@ public class CarService {
         Car[] availableCars = new Car[availableCount];
         int idx = 0;
         for (Car car : cars) {
-            if (car == null) continue;
+            if (car == null) {
+                continue;
+            }
             boolean isBooked = false;
             if (allBookings != null) {
                 for (CarBooking booking : allBookings) {
-                    if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) continue;
+                    if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
+                        continue;
+                    }
                     if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
                         isBooked = true;
                         break;

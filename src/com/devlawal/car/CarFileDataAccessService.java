@@ -1,7 +1,5 @@
 package com.devlawal.car;
 
-import com.devlawal.user.User;
-
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.UUID;
