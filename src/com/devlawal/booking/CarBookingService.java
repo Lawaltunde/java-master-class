@@ -12,16 +12,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class CarBookingService {
-    private final UserService userService;
-    private final CarService carService;
-    private CarBookingDao carBookingDao;
-
-
-    {
-        userService = new UserService();
-        carService = new CarService();
-        carBookingDao = new CarBookingDao();
-    }
+    private final UserService userService = new UserService();
+    private final CarService carService = new CarService();
+    private final CarBookingDao carBookingDao = new CarBookingFileDataAccessService();
 
     public CarBooking[] getAllBookings() {
         return carBookingDao.getAllBookings();
@@ -63,24 +56,24 @@ public class CarBookingService {
     }
 
     public CarBooking[] getAllActiveBookings() {
-        int bookingCount = -1;
+        int bookingCount = 0;
         CarBooking[] allBookings = getAllBookings();
         for (CarBooking booking : allBookings) {
             if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
                 bookingCount++;
             }
         }
-        int index = 0;
-        if (bookingCount > -1) {
-            CarBooking[] carBookings = new CarBooking[bookingCount + 1];
-            for (CarBooking booking : allBookings) {
-                if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                    carBookings[index++] = booking;
-                }
-            }
-            return carBookings;
+        if (bookingCount == 0) {
+            return new CarBooking[0];
         }
-        return new CarBooking[0];
+        int index = 0;
+        CarBooking[] carBookings = new CarBooking[bookingCount];
+        for (CarBooking booking : allBookings) {
+            if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
+                carBookings[index++] = booking;
+            }
+        }
+        return carBookings;
     }
 
     public CarBooking getCarBookingById(UUID id) {
@@ -100,16 +93,10 @@ public class CarBookingService {
         if (id == null) {
             throw new IllegalArgumentException("Enter valid Booking ID!");
         }
-        CarBooking booking = getCarBookingById(id);
-        if (booking != null) {
-            if (booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                booking.setStatus(BookingStatus.CANCELLED);
-            }
-            return true;
-        }
-        return false;
+        return carBookingDao.deleteCarBooking(id);
     }
 
+    // This method will be refactored it's violating the single responsibility principle.
     public Car[] getAllCarsBookedByUser(UUID userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Enter valid user ID!");
@@ -133,54 +120,5 @@ public class CarBookingService {
             }
         }
         return userBookedCars;
-    }
-
-    public Car[] getNotYetBookedElectricCars() {
-        return getCarsThatAreNotYetBooked(carService.getAllElectricCars());
-    }
-
-    public Car[] getNotYetBookedCars() {
-        return getCarsThatAreNotYetBooked(carService.getAllCars());
-    }
-
-    private Car[] getCarsThatAreNotYetBooked(Car[] cars) {
-        if (cars == null) {
-            throw new IllegalStateException("You can't pass empty car list!");
-        }
-
-        CarBooking[] activeBookings = getAllActiveBookings();
-        if (activeBookings.length == 0) {
-            return cars;
-        }
-        CarBooking[] allBookings = getAllBookings();
-        int availableCarCount = 0;
-        for (Car car : cars) {
-            for (CarBooking booking : allBookings) {
-                if (booking != null) {
-                    if (booking.getCar().getId().equals(car.getId()) && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                        continue;
-                    }
-                    availableCarCount++;
-                }
-            }
-        }
-        if (availableCarCount < 0) {
-            System.out.println("All cars are booked!");
-            return new Car[0];
-
-        }
-        Car[] availableCars = new Car[availableCarCount + 1];
-        int index = 0;
-        for (Car car : cars) {
-            for (CarBooking booking : allBookings) {
-                if (booking != null) {
-                    if (booking.getCar().getId().equals(car.getId()) && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                        continue;
-                    }
-                    availableCars[index++] = car;
-                }
-            }
-        }
-        return availableCars;
     }
 }
