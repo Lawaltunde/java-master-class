@@ -32,9 +32,7 @@ public class UserFileDataAccessService implements UserDao, Serializable {
     @Override
     public User getUserById(UUID id) {
         User[] usersFromFile = getAllUsersFromFile();
-        if (usersFromFile == null || usersFromFile.length == 0) {
-            return null;
-        }
+
         for (User user : usersFromFile) {
             if (user.getId().equals(id)) {
                 return user;
