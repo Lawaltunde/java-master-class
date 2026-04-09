@@ -3,7 +3,7 @@ package com.devlawal.user;
 import java.util.UUID;
 
 public class UserService {
-    private static UserDao userDao;
+    private final UserDao userDao;
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
