@@ -12,9 +12,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class CarBookingService {
-    private final UserService userService = new UserService();
-    private final CarService carService = new CarService();
-    private final CarBookingDao carBookingDao = new CarBookingFileDataAccessService();
+    private final UserService userService;
+    private final CarService carService;
+    private final CarBookingDao carBookingDao;
+
+    public CarBookingService(UserService userService, CarService carService, CarBookingDao carBookingDao) {
+        this.userService = userService;
+        this.carService = carService;
+        this.carBookingDao = carBookingDao;
+    }
 
     public CarBooking[] getAllBookings() {
         return carBookingDao.getAllBookings();
@@ -96,7 +102,89 @@ public class CarBookingService {
         return carBookingDao.deleteCarBooking(id);
     }
 
-    // This method will be refactored it's violating the single responsibility principle.
+    public Car[] getCarsThatAreNotYetBooked() {
+        Car[] cars = carService.getAllCars();
+        if (cars.length == 0) {
+            return new Car[0];
+        }
+
+        CarBooking[] allBookings = getAllBookings();
+        if (allBookings == null || allBookings.length == 0) {
+            return cars;
+        }
+
+        int availableCount = 0;
+        for (Car car : cars) {
+            if (car == null) {
+                continue;
+            }
+            boolean isBooked = false;
+            for (CarBooking booking : allBookings) {
+                if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
+                    continue;
+                }
+                if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
+                    isBooked = true;
+                    break;
+                }
+            }
+            if (!isBooked) {
+                availableCount++;
+            }
+        }
+
+        if (availableCount == 0) {
+            return new Car[0];
+        }
+
+        Car[] availableCars = new Car[availableCount];
+        int idx = 0;
+        for (Car car : cars) {
+            if (car == null) {
+                continue;
+            }
+            boolean isBooked = false;
+            for (CarBooking booking : allBookings) {
+                if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
+                    continue;
+                }
+                if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
+                    isBooked = true;
+                    break;
+                }
+            }
+            if (!isBooked) {
+                availableCars[idx++] = car;
+            }
+        }
+        return availableCars;
+    }
+
+    public Car[] getNotYetBookedElectricCars() {
+        Car[] notYetBooked = getCarsThatAreNotYetBooked();
+        if (notYetBooked == null || notYetBooked.length == 0) {
+            return new Car[0];
+        }
+
+        int count = 0;
+        for (Car car : notYetBooked) {
+            if (car != null && car.isElectric()) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            return new Car[0];
+        }
+        int index = 0;
+        Car[] result = new Car[count];
+        for (Car car : notYetBooked) {
+            if (car != null && car.isElectric()) {
+                result[index++] = car;
+            }
+        }
+        return result;
+    }
+
     public Car[] getAllCarsBookedByUser(UUID userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Enter valid user ID!");
