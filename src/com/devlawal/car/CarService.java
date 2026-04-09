@@ -7,8 +7,12 @@ import com.devlawal.booking.CarBookingService;
 import java.util.UUID;
 
 public class CarService {
-    private final CarDao carDao = new CarFileDataAccessService();
+    private final CarDao carDao;
     private CarBookingService carBookingService;
+
+    public CarService(CarDao carDao) {
+        this.carDao = carDao;
+    }
 
     private CarBookingService getCarBookingService() {
         if (carBookingService == null) {
