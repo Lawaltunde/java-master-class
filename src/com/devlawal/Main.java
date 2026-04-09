@@ -1,11 +1,11 @@
 package com.devlawal;
 
 import com.devlawal.booking.CarBooking;
+import com.devlawal.booking.CarBookingDao;
+import com.devlawal.booking.CarBookingFileDataAccessService;
 import com.devlawal.booking.CarBookingService;
-import com.devlawal.car.Car;
-import com.devlawal.car.CarService;
-import com.devlawal.user.User;
-import com.devlawal.user.UserService;
+import com.devlawal.car.*;
+import com.devlawal.user.*;
 
 import java.time.LocalDate;
 import java.util.InputMismatchException;
@@ -15,9 +15,18 @@ import java.util.UUID;
 public class Main {
     public static void main(String[] args) {
 
-        UserService userService = new UserService();
-        CarService carService = new CarService();
-        CarBookingService carBookingService = new CarBookingService();
+        UserDao userDao = new UserFileDataAccessService();
+        //UserDao userDao = new UserArrayDataAccessService();
+        UserService userService = new UserService(userDao);
+
+        CarDao carDao = new CarFileDataAccessService();
+        //CarDao carDao = new CarArrayDataAccessService();
+        CarService carService = new CarService(carDao);
+
+        CarBookingDao carBookingDao = new CarBookingFileDataAccessService();
+        //CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
+        CarBookingService carBookingService = new CarBookingService(userService, carService, carBookingDao);
+
         carBookingOperation(carBookingService, carService, userService);
     }
 
@@ -103,7 +112,7 @@ public class Main {
                     }
                     break;
                 case 5:
-                    Car[] notYetBookedCars = carService.getCarsThatAreNotYetBooked();
+                    Car[] notYetBookedCars = carBookingService.getCarsThatAreNotYetBooked();
                     if (notYetBookedCars == null || notYetBookedCars.length == 0) {
                         System.out.println("All cars booked!");
                     }
@@ -112,7 +121,7 @@ public class Main {
                     }
                     break;
                 case 6:
-                    Car[] notYetBookedElectricCars = carService.getNotYetBookedElectricCars();
+                    Car[] notYetBookedElectricCars = carBookingService.getNotYetBookedElectricCars();
                     if (notYetBookedElectricCars == null || notYetBookedElectricCars.length == 0) {
                         System.out.println("All electric cars booked!");
                     }

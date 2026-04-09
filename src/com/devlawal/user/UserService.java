@@ -3,7 +3,11 @@ package com.devlawal.user;
 import java.util.UUID;
 
 public class UserService {
-    private static final UserDao userDao = new UserFileDataAccessService();
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public User[] getAllUsers() {
         return userDao.getUsers();
