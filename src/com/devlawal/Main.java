@@ -9,6 +9,7 @@ import com.devlawal.user.*;
 
 import java.time.LocalDate;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -68,8 +69,8 @@ public class Main {
                     }
                     break;
                 case 2:
-                    CarBooking[] activeBookings = carBookingService.getAllActiveBookings();
-                    if (activeBookings == null || activeBookings.length == 0) {
+                    List<CarBooking> activeBookings = carBookingService.getAllActiveBookings();
+                    if (activeBookings == null || activeBookings.isEmpty()) {
                         System.out.println("There are no bookings to delete!");
                         break;
                     }
@@ -91,19 +92,29 @@ public class Main {
                     }
                     break;
                 case 3:
-                    for (User user : userService.getAllUsers()) {
+                    List<User> users = userService.getAllUsers();
+                    if  (users == null || users.isEmpty()) {
+                        System.out.println("There are no users to display!");
+                        break;
+                    }
+                    for (User user : users) {
                         System.out.println(user);
                     }
                     System.out.println("Enter User ID: ");
                     Scanner scannerUser3 = new Scanner(System.in);
                     UUID userId3 = UUID.fromString(scannerUser3.nextLine());
-                    for (Car booking : carBookingService.getAllCarsBookedByUser(userId3)) {
+                    List<Car> allCarsBookedByUser = carBookingService.getAllCarsBookedByUser(userId3);
+                    if (allCarsBookedByUser == null || allCarsBookedByUser.isEmpty()) {
+                        System.out.println("This user has not booked any cars!");
+                        break;
+                    }
+                    for (Car booking : allCarsBookedByUser) {
                         System.out.println(booking);
                     }
                     break;
                 case 4:
-                    CarBooking[] allActiveBookings = carBookingService.getAllActiveBookings();
-                    if (allActiveBookings == null || allActiveBookings.length == 0) {
+                    List<CarBooking> allActiveBookings = carBookingService.getAllActiveBookings();
+                    if (allActiveBookings == null || allActiveBookings.isEmpty()) {
                         System.out.println("There are no  bookings to display!");
                         break;
                     }
@@ -112,8 +123,8 @@ public class Main {
                     }
                     break;
                 case 5:
-                    Car[] notYetBookedCars = carBookingService.getCarsThatAreNotYetBooked();
-                    if (notYetBookedCars == null || notYetBookedCars.length == 0) {
+                    List<Car> notYetBookedCars = carBookingService.getCarsThatAreNotYetBooked();
+                    if (notYetBookedCars == null || notYetBookedCars.isEmpty()) {
                         System.out.println("All cars booked!");
                     }
                     for (Car car : notYetBookedCars) {
@@ -121,8 +132,8 @@ public class Main {
                     }
                     break;
                 case 6:
-                    Car[] notYetBookedElectricCars = carBookingService.getNotYetBookedElectricCars();
-                    if (notYetBookedElectricCars == null || notYetBookedElectricCars.length == 0) {
+                    List<Car> notYetBookedElectricCars = carBookingService.getNotYetBookedElectricCars();
+                    if (notYetBookedElectricCars == null || notYetBookedElectricCars.isEmpty()) {
                         System.out.println("All electric cars booked!");
                     }
                     for (Car car : notYetBookedElectricCars) {
