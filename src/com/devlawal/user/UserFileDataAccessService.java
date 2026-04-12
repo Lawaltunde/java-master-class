@@ -1,6 +1,9 @@
 package com.devlawal.user;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserFileDataAccessService implements UserDao, Serializable {
@@ -11,27 +14,26 @@ public class UserFileDataAccessService implements UserDao, Serializable {
     static {
         File file = new File("src/com/devlawal/user/user.dat");
         if (!file.exists()) {
-            User[] users = new User[]{
+            List<User> users = List.of(
                     new User(UUID.fromString("8ca51d2b-aaaf-4bf2-834a-e02964e10fc3"), "Lawal"),
-                    new User(UUID.fromString("b10d126a-3608-4980-9f9c-aa179f5cebc3"), "James")
+            new User(UUID.fromString("b10d126a-3608-4980-9f9c-aa179f5cebc3"), "James"));
 
-            };
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src/com/devlawal/user/user.dat"))) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
                 oos.writeObject(users);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-    }
+}
 
     @Override
-    public User[] getUsers() {
+    public List<User> getUsers() {
         return getAllUsersFromFile();
     }
 
     @Override
     public User getUserById(UUID id) {
-        User[] usersFromFile = getAllUsersFromFile();
+        List<User> usersFromFile = getAllUsersFromFile();
 
         for (User user : usersFromFile) {
             if (user.getId().equals(id)) {
@@ -41,12 +43,12 @@ public class UserFileDataAccessService implements UserDao, Serializable {
         return null;
     }
 
-    private User[] getAllUsersFromFile() {
+    private List<User> getAllUsersFromFile() {
         if (!file.exists()) {
-            return new User[0];
+            return new ArrayList<>();
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(PATH))) {
-            return (User[]) ois.readObject();
+            return (List<User>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
