@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CarBookingService {
@@ -22,7 +24,7 @@ public class CarBookingService {
         this.carBookingDao = carBookingDao;
     }
 
-    public CarBooking[] getAllBookings() {
+    public List<CarBooking> getAllBookings() {
         return carBookingDao.getAllBookings();
     }
 
@@ -47,7 +49,7 @@ public class CarBookingService {
         if (endDate.isBefore(startDate)) {
             throw new IllegalArgumentException("endDate can't be before startDate!");
         }
-        CarBooking[] allBookings = getAllBookings();
+        List<CarBooking> allBookings = getAllBookings();
         for (CarBooking booking : allBookings) {
             if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE) && booking.getCar().getId().equals(car.getId())) {
                 throw new IllegalArgumentException("Car already booked!");
@@ -61,32 +63,22 @@ public class CarBookingService {
         return newBooking;
     }
 
-    public CarBooking[] getAllActiveBookings() {
-        int bookingCount = 0;
-        CarBooking[] allBookings = getAllBookings();
+    public List<CarBooking> getAllActiveBookings() {
+        List<CarBooking> allBookings = getAllBookings();
+        List<CarBooking> activeBookings = new ArrayList<>();
         for (CarBooking booking : allBookings) {
             if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                bookingCount++;
+                activeBookings.add(booking);
             }
         }
-        if (bookingCount == 0) {
-            return new CarBooking[0];
-        }
-        int index = 0;
-        CarBooking[] carBookings = new CarBooking[bookingCount];
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                carBookings[index++] = booking;
-            }
-        }
-        return carBookings;
+        return activeBookings;
     }
 
     public CarBooking getCarBookingById(UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("Enter valid car ID!");
         }
-        CarBooking[] allBookings = getAllBookings();
+        List<CarBooking> allBookings = getAllBookings();
         for (CarBooking booking : allBookings) {
             if (booking != null && booking.getId().equals(id)) {
                 return booking;
@@ -102,109 +94,67 @@ public class CarBookingService {
         return carBookingDao.deleteCarBooking(id);
     }
 
-    public Car[] getCarsThatAreNotYetBooked() {
-        Car[] cars = carService.getAllCars();
-        if (cars.length == 0) {
-            return new Car[0];
+    public List<Car> getCarsThatAreNotYetBooked() {
+        List<Car> cars = carService.getAllCars();
+        if (cars.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        CarBooking[] allBookings = getAllBookings();
-        if (allBookings == null || allBookings.length == 0) {
+        List<CarBooking> allBookings = getAllBookings();
+        if (allBookings == null || allBookings.isEmpty()) {
             return cars;
         }
 
-        int availableCount = 0;
+        List<Car> availableCars = new ArrayList<>();
         for (Car car : cars) {
-            if (car == null) {
+            if (car == null || car.getId() == null) {
                 continue;
             }
-            boolean isBooked = false;
+            boolean hasActiveBooking = false;
             for (CarBooking booking : allBookings) {
                 if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
                     continue;
                 }
                 if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
-                    isBooked = true;
+                    hasActiveBooking = true;
                     break;
                 }
             }
-            if (!isBooked) {
-                availableCount++;
-            }
-        }
-
-        if (availableCount == 0) {
-            return new Car[0];
-        }
-
-        Car[] availableCars = new Car[availableCount];
-        int idx = 0;
-        for (Car car : cars) {
-            if (car == null) {
-                continue;
-            }
-            boolean isBooked = false;
-            for (CarBooking booking : allBookings) {
-                if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
-                    continue;
-                }
-                if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
-                    isBooked = true;
-                    break;
-                }
-            }
-            if (!isBooked) {
-                availableCars[idx++] = car;
+            if (!hasActiveBooking) {
+                availableCars.add(car);
             }
         }
         return availableCars;
     }
 
-    public Car[] getNotYetBookedElectricCars() {
-        Car[] notYetBooked = getCarsThatAreNotYetBooked();
-        if (notYetBooked == null || notYetBooked.length == 0) {
-            return new Car[0];
+    public List<Car> getNotYetBookedElectricCars() {
+        List<Car> notYetBooked = getCarsThatAreNotYetBooked();
+        if (notYetBooked == null || notYetBooked.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        int count = 0;
+        List<Car> result = new ArrayList<>();
         for (Car car : notYetBooked) {
             if (car != null && car.isElectric()) {
-                count++;
-            }
-        }
-        if (count == 0) {
-            return new Car[0];
-        }
-        int index = 0;
-        Car[] result = new Car[count];
-        for (Car car : notYetBooked) {
-            if (car != null && car.isElectric()) {
-                result[index++] = car;
+                result.add(car);
             }
         }
         return result;
     }
 
-    public Car[] getAllCarsBookedByUser(UUID userId) {
+    public List<Car> getAllCarsBookedByUser(UUID userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Enter valid user ID!");
         }
-        int bookingCount = -1;
-        CarBooking[] allBookings = getAllBookings();
+
+        List<CarBooking> allBookings = getAllBookings();
+        if (allBookings == null || allBookings.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Car> userBookedCars = new ArrayList<>();
         for (CarBooking booking : allBookings) {
             if (booking != null && booking.getUser().getId().equals(userId)) {
-                bookingCount++;
-            }
-        }
-        if (bookingCount < 0) {
-            System.out.println("User has no bookings!");
-            return new Car[0];
-        }
-        int index = 0;
-        Car[] userBookedCars = new Car[bookingCount + 1];
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getUser().getId().equals(userId)) {
-                userBookedCars[index++] = booking.getCar();
+                userBookedCars.add(booking.getCar());
             }
         }
         return userBookedCars;

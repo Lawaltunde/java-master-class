@@ -1,10 +1,11 @@
 package com.devlawal.booking;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CarBookingDao {
 
-    CarBooking[] getAllBookings();
+    List<CarBooking> getAllBookings();
 
     void addBooking(CarBooking carBooking);
 

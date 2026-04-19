@@ -1,5 +1,7 @@
 package com.devlawal.car;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CarService {
@@ -9,32 +11,22 @@ public class CarService {
         this.carDao = carDao;
     }
 
-    public Car[] getAllCars() {
-        Car[] cars = carDao.getAllCars();
-        return cars == null ? new Car[0] : cars;
+    public List<Car> getAllCars() {
+        List<Car> cars = carDao.getAllCars();
+        return cars == null ? new ArrayList<>() : cars;
     }
 
-    public Car[] getAllElectricCars() {
-        Car[] allCars = getAllCars();
-        if (allCars.length == 0) {
-            return new Car[0];
-        }
-        int electricCarCounter = 0;
-
-        for (Car car : allCars) {
-            if (car != null && car.isElectric()) {
-                electricCarCounter++;
-            }
+    public List<Car> getAllElectricCars() {
+        List<Car> allCars = getAllCars();
+        if (allCars.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        if (electricCarCounter == 0) {
-            return new Car[0];
-        }
-        int index = 0;
-        Car[] electricCars = new Car[electricCarCounter];
+
+        List<Car> electricCars = new ArrayList<>();
         for (Car car : allCars) {
             if (car != null && car.isElectric()) {
-                electricCars[index++] = car;
+                electricCars.add(car);
             }
         }
         return electricCars;
