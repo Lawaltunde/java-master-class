@@ -39,15 +39,7 @@ public class CarFileDataAccessService implements CarDao, Serializable {
     @Override
     public Car getCarById(UUID id) {
         List<Car> cars = getCarsFromFile();
-        if (cars == null || cars.isEmpty()) {
-            return null;
-        }
-        for (Car car : getCarsFromFile()) {
-            if (car.getId().equals(id)) {
-                return car;
-            }
-        }
-        return null;
+        return cars.stream().filter(car -> car.getId().equals(id)).findFirst().orElse(null);
     }
 
     private List<Car> getCarsFromFile() {

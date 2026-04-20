@@ -18,18 +18,7 @@ public class CarService {
 
     public List<Car> getAllElectricCars() {
         List<Car> allCars = getAllCars();
-        if (allCars.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-
-        List<Car> electricCars = new ArrayList<>();
-        for (Car car : allCars) {
-            if (car != null && car.isElectric()) {
-                electricCars.add(car);
-            }
-        }
-        return electricCars;
+        return allCars.stream().filter(Car::isElectric).toList();
     }
 
     public Car getCarById(UUID id) {
@@ -43,11 +32,8 @@ public class CarService {
         if (regNumber == null) {
             throw new IllegalArgumentException("Registration Number cannot be null!");
         }
-        for (Car car : getAllCars()) {
-            if (car != null && car.getRegNumber() != null && car.getRegNumber().equals(regNumber)) {
-                return car;
-            }
-        }
-        return null;
+        List<Car> allCars = getAllCars();
+        return allCars.stream().filter(car -> car.getRegNumber().equals(regNumber)).findFirst().orElse(null);
+
     }
 }
