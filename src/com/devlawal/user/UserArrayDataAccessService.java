@@ -18,11 +18,7 @@ public class UserArrayDataAccessService implements UserDao {
     }
 
     public User getUserById(UUID id) {
-        for (User user : users) {
-            if (user != null && user.getId().equals(id)) {
-                return user;
-            }
-        }
-        return null;
+        return users.stream().filter(user -> user.getId().equals(id)).findFirst().orElse(null);
     }
+
 }
