@@ -3,6 +3,7 @@ package com.devlawal.car;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CarArrayDataAccessService implements CarDao {
@@ -17,10 +18,13 @@ public class CarArrayDataAccessService implements CarDao {
     }
 
     public  List<Car> getAllCars() {
-        return cars;
+        return new ArrayList<>(cars);
     }
 
     public Car getCarById(UUID id) {
-        return cars.stream().filter(car -> car.getId().equals(id)).findFirst().orElse(null);
+        return cars.stream()
+                .filter(car -> car != null && Objects.equals(car.getId(), id))
+                .findFirst()
+                .orElse(null);
     }
 }

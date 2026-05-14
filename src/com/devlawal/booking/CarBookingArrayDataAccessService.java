@@ -3,10 +3,11 @@ package com.devlawal.booking;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CarBookingArrayDataAccessService implements CarBookingDao {
-    private final List<CarBooking> carBookings = new ArrayList<CarBooking>();
+    private final List<CarBooking> carBookings = new ArrayList<>();
 
     public List<CarBooking> getAllBookings() {
         return carBookings;
@@ -18,13 +19,14 @@ public class CarBookingArrayDataAccessService implements CarBookingDao {
 
     @Override
     public boolean deleteCarBooking(UUID id) {
-
-        Optional<CarBooking> booking = carBookings.stream().filter(carBooking -> carBooking.getId().equals(id)).findFirst();
-        if (booking.isPresent()) {
-            booking.ifPresent(carBooking -> carBooking.setStatus(BookingStatus.CANCELLED));
-            return true;
-        }
-        return false;
+        return carBookings.stream()
+                .filter(carBooking -> carBooking != null && Objects.equals(carBooking.getId(), id))
+                .findFirst()
+                .map(carBooking -> {
+                    carBooking.setStatus(BookingStatus.CANCELLED);
+                    return true;
+                })
+                .orElse(false);
     }
 
 }

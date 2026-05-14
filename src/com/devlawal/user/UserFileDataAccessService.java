@@ -3,7 +3,7 @@ package com.devlawal.user;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserFileDataAccessService implements UserDao, Serializable {
@@ -34,7 +34,10 @@ public class UserFileDataAccessService implements UserDao, Serializable {
     @Override
     public User getUserById(UUID id) {
         List<User> usersFromFile = getAllUsersFromFile();
-        return usersFromFile.stream().filter(user -> user.getId().equals(id)).findFirst().orElse(null);
+        return usersFromFile.stream()
+                .filter(user -> user != null && Objects.equals(user.getId(), id))
+                .findFirst()
+                .orElse(null);
     }
 
     private List<User> getAllUsersFromFile() {
@@ -42,7 +45,18 @@ public class UserFileDataAccessService implements UserDao, Serializable {
             return new ArrayList<>();
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(PATH))) {
-            return (List<User>) ois.readObject();
+            Object data = ois.readObject();
+            if (!(data instanceof List<?> rawUsers)) {
+                return new ArrayList<>();
+            }
+
+            List<User> users = new ArrayList<>();
+            for (Object rawUser : rawUsers) {
+                if (rawUser instanceof User user) {
+                    users.add(user);
+                }
+            }
+            return users;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
