@@ -2,6 +2,7 @@ package com.devlawal.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserArrayDataAccessService implements UserDao {
@@ -14,15 +15,14 @@ public class UserArrayDataAccessService implements UserDao {
     }
 
     public List<User> getUsers() {
-        return users;
+        return new ArrayList<>(users);
     }
 
     public User getUserById(UUID id) {
-        for (User user : users) {
-            if (user != null && user.getId().equals(id)) {
-                return user;
-            }
-        }
-        return null;
+        return users.stream()
+                .filter(user -> user != null && Objects.equals(user.getId(), id))
+                .findFirst()
+                .orElse(null);
     }
+
 }

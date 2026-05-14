@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CarBookingService {
     private final UserService userService;
@@ -50,10 +52,13 @@ public class CarBookingService {
             throw new IllegalArgumentException("endDate can't be before startDate!");
         }
         List<CarBooking> allBookings = getAllBookings();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE) && booking.getCar().getId().equals(car.getId())) {
-                throw new IllegalArgumentException("Car already booked!");
-            }
+        boolean carAlreadyBooked = allBookings.stream()
+                .anyMatch(booking -> booking != null
+                        && booking.getStatus() == BookingStatus.ACTIVE
+                        && booking.getCar() != null
+                        && Objects.equals(booking.getCar().getId(), car.getId()));
+        if (carAlreadyBooked) {
+            throw new IllegalArgumentException("Car already booked!");
         }
 
         long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
@@ -65,13 +70,9 @@ public class CarBookingService {
 
     public List<CarBooking> getAllActiveBookings() {
         List<CarBooking> allBookings = getAllBookings();
-        List<CarBooking> activeBookings = new ArrayList<>();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                activeBookings.add(booking);
-            }
-        }
-        return activeBookings;
+        return allBookings.stream()
+                .filter(booking -> booking != null && booking.getStatus() == BookingStatus.ACTIVE)
+                .collect(Collectors.toList());
     }
 
     public CarBooking getCarBookingById(UUID id) {
@@ -79,12 +80,8 @@ public class CarBookingService {
             throw new IllegalArgumentException("Enter valid car ID!");
         }
         List<CarBooking> allBookings = getAllBookings();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getId().equals(id)) {
-                return booking;
-            }
-        }
-        throw new IllegalStateException("Car ID does not exist!");
+        return allBookings.stream().filter(booking -> booking != null && booking.getId().equals(id)).
+                findFirst().orElseThrow(() -> new IllegalStateException("Car ID does not exist!"));
     }
 
     public boolean deleteCarBooking(UUID id) {
@@ -105,26 +102,13 @@ public class CarBookingService {
             return cars;
         }
 
-        List<Car> availableCars = new ArrayList<>();
-        for (Car car : cars) {
-            if (car == null || car.getId() == null) {
-                continue;
-            }
-            boolean hasActiveBooking = false;
-            for (CarBooking booking : allBookings) {
-                if (booking == null || booking.getCar() == null || booking.getCar().getId() == null) {
-                    continue;
-                }
-                if (booking.getCar().getId().equals(car.getId()) && booking.getStatus() == BookingStatus.ACTIVE) {
-                    hasActiveBooking = true;
-                    break;
-                }
-            }
-            if (!hasActiveBooking) {
-                availableCars.add(car);
-            }
-        }
-        return availableCars;
+        return cars.stream()
+                .filter(car -> car != null && car.getId() != null)
+                .filter(car -> allBookings.stream()
+                        .filter(booking -> booking != null && booking.getCar() != null && booking.getCar().getId() != null)
+                        .noneMatch(booking -> booking.getStatus() == BookingStatus.ACTIVE
+                                && Objects.equals(booking.getCar().getId(), car.getId())))
+                .collect(Collectors.toList());
     }
 
     public List<Car> getNotYetBookedElectricCars() {
@@ -132,14 +116,7 @@ public class CarBookingService {
         if (notYetBooked == null || notYetBooked.isEmpty()) {
             return new ArrayList<>();
         }
-
-        List<Car> result = new ArrayList<>();
-        for (Car car : notYetBooked) {
-            if (car != null && car.isElectric()) {
-                result.add(car);
-            }
-        }
-        return result;
+        return notYetBooked.stream().filter(car -> car != null && car.isElectric()).collect(Collectors.toList());
     }
 
     public List<Car> getAllCarsBookedByUser(UUID userId) {
@@ -151,12 +128,14 @@ public class CarBookingService {
         if (allBookings == null || allBookings.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Car> userBookedCars = new ArrayList<>();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getUser().getId().equals(userId)) {
-                userBookedCars.add(booking.getCar());
-            }
-        }
-        return userBookedCars;
+
+        return allBookings.stream()
+                .filter(booking -> booking != null
+                        && booking.getUser() != null
+                        && Objects.equals(booking.getUser().getId(), userId))
+                .map(CarBooking::getCar)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
     }
 }

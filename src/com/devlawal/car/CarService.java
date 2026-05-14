@@ -2,7 +2,9 @@ package com.devlawal.car;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CarService {
     private final CarDao carDao;
@@ -18,18 +20,7 @@ public class CarService {
 
     public List<Car> getAllElectricCars() {
         List<Car> allCars = getAllCars();
-        if (allCars.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-
-        List<Car> electricCars = new ArrayList<>();
-        for (Car car : allCars) {
-            if (car != null && car.isElectric()) {
-                electricCars.add(car);
-            }
-        }
-        return electricCars;
+        return allCars.stream().filter(Car::isElectric).collect(Collectors.toList());
     }
 
     public Car getCarById(UUID id) {
@@ -43,11 +34,11 @@ public class CarService {
         if (regNumber == null) {
             throw new IllegalArgumentException("Registration Number cannot be null!");
         }
-        for (Car car : getAllCars()) {
-            if (car != null && car.getRegNumber() != null && car.getRegNumber().equals(regNumber)) {
-                return car;
-            }
-        }
-        return null;
+        List<Car> allCars = getAllCars();
+        return allCars.stream()
+                .filter(car -> Objects.equals(car.getRegNumber(), regNumber))
+                .findFirst()
+                .orElse(null);
+
     }
 }
