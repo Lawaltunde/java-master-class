@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CarBookingService {
     private final UserService userService;
@@ -65,13 +66,7 @@ public class CarBookingService {
 
     public List<CarBooking> getAllActiveBookings() {
         List<CarBooking> allBookings = getAllBookings();
-        List<CarBooking> activeBookings = new ArrayList<>();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-                activeBookings.add(booking);
-            }
-        }
-        return activeBookings;
+        return allBookings.stream().filter(booking -> booking.getStatus().equals(BookingStatus.ACTIVE)).toList();
     }
 
     public CarBooking getCarBookingById(UUID id) {
@@ -79,12 +74,8 @@ public class CarBookingService {
             throw new IllegalArgumentException("Enter valid car ID!");
         }
         List<CarBooking> allBookings = getAllBookings();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getId().equals(id)) {
-                return booking;
-            }
-        }
-        throw new IllegalStateException("Car ID does not exist!");
+        return allBookings.stream().filter(booking -> booking != null && booking.getId().equals(id)).
+                findFirst().orElseThrow(() -> new IllegalStateException("Car ID does not exist!"));
     }
 
     public boolean deleteCarBooking(UUID id) {
@@ -132,14 +123,7 @@ public class CarBookingService {
         if (notYetBooked == null || notYetBooked.isEmpty()) {
             return new ArrayList<>();
         }
-
-        List<Car> result = new ArrayList<>();
-        for (Car car : notYetBooked) {
-            if (car != null && car.isElectric()) {
-                result.add(car);
-            }
-        }
-        return result;
+        return notYetBooked.stream().filter(car -> car != null && car.isElectric()).collect(Collectors.toList());
     }
 
     public List<Car> getAllCarsBookedByUser(UUID userId) {
@@ -151,12 +135,10 @@ public class CarBookingService {
         if (allBookings == null || allBookings.isEmpty()) {
             return new ArrayList<>();
         }
-        List<Car> userBookedCars = new ArrayList<>();
-        for (CarBooking booking : allBookings) {
-            if (booking != null && booking.getUser().getId().equals(userId)) {
-                userBookedCars.add(booking.getCar());
-            }
-        }
-        return userBookedCars;
+
+        return allBookings.stream().filter(
+                booking -> booking != null && booking.getUser() != null && booking.getUser().getId() != null && booking.getUser().getId().equals(userId)).
+                map(CarBooking::getCar).toList();
+
     }
 }

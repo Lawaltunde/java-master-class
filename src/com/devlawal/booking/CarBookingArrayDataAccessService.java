@@ -2,6 +2,7 @@ package com.devlawal.booking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CarBookingArrayDataAccessService implements CarBookingDao {
@@ -17,14 +18,12 @@ public class CarBookingArrayDataAccessService implements CarBookingDao {
 
     @Override
     public boolean deleteCarBooking(UUID id) {
-      if (!carBookings.isEmpty()) {
-          for (CarBooking booking : carBookings) {
-              if (booking != null && booking.getId().equals(id)) {
-                  booking.setStatus(BookingStatus.CANCELLED);
-                  return true;
-              }
-          }
-      }
+
+        Optional<CarBooking> booking = carBookings.stream().filter(carBooking -> carBooking.getId().equals(id)).findFirst();
+        if (booking.isPresent()) {
+            booking.ifPresent(carBooking -> carBooking.setStatus(BookingStatus.CANCELLED));
+            return true;
+        }
         return false;
     }
 
