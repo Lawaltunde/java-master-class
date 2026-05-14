@@ -1,8 +1,6 @@
 package com.devlawal.booking;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +26,7 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
     public void addBooking(CarBooking carBooking) {
         List<CarBooking> temp = getAllBookings();
         temp.add(carBooking);
-        try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(new java.io.FileOutputStream(filePath))) {
+        try (java.io.ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
             oos.writeObject(temp);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -42,7 +40,7 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
             for (CarBooking booking : bookings) {
                 if (booking.getId().equals(id)) {
                     booking.setStatus(BookingStatus.CANCELLED);
-                    try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(new java.io.FileOutputStream(filePath))) {
+                    try (java.io.ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
                         oos.writeObject(bookings);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
