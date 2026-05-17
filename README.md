@@ -743,11 +743,11 @@ Convert the project from a plain Java project to a Maven project.
 
 ```java
 // Before - hardcoded path relative to project root (breaks in Maven)
-File file = new File("src/com/devlawal/users.csv");
+File file = new File("src/devlawal/users.csv");
 
 // After - loads from classpath (src/main/resources/)
 File file = new File(
-    getClass().getClassLoader().getResource("users.csv").getPath()
+        getClass().getClassLoader().getResource("users.csv").getPath()
 );
 ```
 

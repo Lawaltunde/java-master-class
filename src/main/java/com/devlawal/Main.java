@@ -1,9 +1,6 @@
 package com.devlawal;
 
-import com.devlawal.booking.CarBooking;
-import com.devlawal.booking.CarBookingDao;
-import com.devlawal.booking.CarBookingFileDataAccessService;
-import com.devlawal.booking.CarBookingService;
+import com.devlawal.booking.*;
 import com.devlawal.car.*;
 import com.devlawal.user.*;
 
@@ -16,16 +13,14 @@ import java.util.UUID;
 public class Main {
     public static void main(String[] args) {
 
-        UserDao userDao = new UserFileDataAccessService();
-        //UserDao userDao = new UserArrayDataAccessService();
+        //UserDao userDao = new UserFileDataAccessService();
+        UserDao userDao = new UserFakerDataAccessService();
         UserService userService = new UserService(userDao);
 
-        CarDao carDao = new CarFileDataAccessService();
-        //CarDao carDao = new CarArrayDataAccessService();
+        CarDao carDao = new CarArrayDataAccessService();
         CarService carService = new CarService(carDao);
 
-        CarBookingDao carBookingDao = new CarBookingFileDataAccessService();
-        //CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
+        CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
         CarBookingService carBookingService = new CarBookingService(userService, carService, carBookingDao);
 
         carBookingOperation(carBookingService, carService, userService);
@@ -54,7 +49,7 @@ public class Main {
                         Scanner scannerCar = new Scanner(System.in);
                         UUID carId = UUID.fromString(scannerCar.nextLine());
 
-                        System.out.println("Enter Start Date: "); //2026-03-16
+                        System.out.println("Enter Start Date (YYYY-MM-DD): ");
                         Scanner scannerStartDate = new Scanner(System.in);
                         LocalDate startDate = LocalDate.parse(scannerStartDate.nextLine());
 

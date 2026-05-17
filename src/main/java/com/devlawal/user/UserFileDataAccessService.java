@@ -7,12 +7,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserFileDataAccessService implements UserDao, Serializable {
-    private final String PATH = "src/com/devlawal/user/user.dat";
+    private final String PATH = getClass().getClassLoader().getResource("user.dat").getPath();
     private final File file = new File(PATH);
 
     // to seed user.dat with static data
     static {
-        File file = new File("src/com/devlawal/user/user.dat");
+        File file = new File("src/main/resources/user.dat");
         if (!file.exists()) {
             List<User> users = List.of(
                     new User(UUID.fromString("8ca51d2b-aaaf-4bf2-834a-e02964e10fc3"), "Lawal"),
