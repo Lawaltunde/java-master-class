@@ -20,7 +20,8 @@ public class Main {
         CarDao carDao = new CarArrayDataAccessService();
         CarService carService = new CarService(carDao);
 
-        CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
+        CarBookingDao carBookingDao = new CarBookingFileDataAccessService();
+        //CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
         CarBookingService carBookingService = new CarBookingService(userService, carService, carBookingDao);
 
         carBookingOperation(carBookingService, carService, userService);
