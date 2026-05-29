@@ -6,6 +6,7 @@ import com.devlawal.user.User;
 import com.devlawal.user.UserService;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -19,11 +20,17 @@ public class CarBookingService {
     private final UserService userService;
     private final CarService carService;
     private final CarBookingDao carBookingDao;
+    private final Clock clock;
 
     public CarBookingService(UserService userService, CarService carService, CarBookingDao carBookingDao) {
+        this(userService, carService, carBookingDao, Clock.systemDefaultZone());
+    }
+
+    public CarBookingService(UserService userService, CarService carService, CarBookingDao carBookingDao, Clock clock) {
         this.userService = userService;
         this.carService = carService;
         this.carBookingDao = carBookingDao;
+        this.clock = clock;
     }
 
     public List<CarBooking> getAllBookings() {
@@ -45,7 +52,7 @@ public class CarBookingService {
         if (car == null) {
             throw new IllegalStateException("Car with Id " + carId + " can't be found!");
         }
-        if (startDate.isBefore(LocalDate.now())) {
+        if (startDate.isBefore(LocalDate.now(clock))) {
             throw new IllegalArgumentException("startDate can't be before now!");
         }
         if (endDate.isBefore(startDate)) {
@@ -63,7 +70,7 @@ public class CarBookingService {
 
         long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
         BigDecimal price = car.getRentalPrice().multiply(BigDecimal.valueOf(numberOfDays));
-        CarBooking newBooking = new CarBooking(UUID.randomUUID(), user, car, startDate, endDate, price, BookingStatus.ACTIVE, LocalDateTime.now());
+        CarBooking newBooking = new CarBooking(UUID.randomUUID(), user, car, startDate, endDate, price, BookingStatus.ACTIVE, LocalDateTime.now(clock));
         carBookingDao.addBooking(newBooking);
         return newBooking;
     }

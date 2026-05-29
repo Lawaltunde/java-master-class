@@ -6,8 +6,18 @@ import java.util.List;
 import java.util.UUID;
 
 public class CarBookingFileDataAccessService implements CarBookingDao, Serializable {
-    private final String PATH = "src/main/resources/booking.dat";
-    private final File file = new File(PATH);
+    private final String PATH;
+    private final File file;
+
+    public CarBookingFileDataAccessService() {
+        this.PATH = "src/main/resources/booking.dat";
+        this.file = new File(this.PATH);
+    }
+
+    public CarBookingFileDataAccessService(String path) {
+        this.PATH = path;
+        this.file = new File(path);
+    }
 
     @Override
     public List<CarBooking> getAllBookings() {
