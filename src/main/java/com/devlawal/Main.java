@@ -13,9 +13,9 @@ import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
-
+        Faker faker = new Faker();
         //UserDao userDao = new UserFileDataAccessService();
-        UserDao userDao = new UserFakerDataAccessService();
+        UserDao userDao = new UserFakerDataAccessService(faker);
         UserService userService = new UserService(userDao);
 
         CarDao carDao = new CarArrayDataAccessService();
