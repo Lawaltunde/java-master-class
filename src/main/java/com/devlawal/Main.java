@@ -13,15 +13,9 @@ import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
-        String name = "kay";
-        name.trim().toLowerCase();
-        for (int i = 0; i < name.length(); i++) {
-            System.out.println(name.charAt(i));
-        }
 
         //UserDao userDao = new UserFileDataAccessService();
-        //UserDao userDao = new UserArrayDataAccessService();
-        UserDao userDao = UserFakerDataAccessService.create();
+        UserDao userDao = new UserFakerDataAccessService();
         UserService userService = new UserService(userDao);
 
         CarDao carDao = new CarArrayDataAccessService();
