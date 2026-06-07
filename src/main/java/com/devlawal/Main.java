@@ -3,6 +3,7 @@ package com.devlawal;
 import com.devlawal.booking.*;
 import com.devlawal.car.*;
 import com.devlawal.user.*;
+import com.github.javafaker.Faker;
 
 import java.time.LocalDate;
 import java.util.InputMismatchException;
@@ -12,9 +13,15 @@ import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
+        String name = "kay";
+        name.trim().toLowerCase();
+        for (int i = 0; i < name.length(); i++) {
+            System.out.println(name.charAt(i));
+        }
 
         //UserDao userDao = new UserFileDataAccessService();
-        UserDao userDao = new UserFakerDataAccessService();
+        //UserDao userDao = new UserArrayDataAccessService();
+        UserDao userDao = UserFakerDataAccessService.create();
         UserService userService = new UserService(userDao);
 
         CarDao carDao = new CarArrayDataAccessService();
